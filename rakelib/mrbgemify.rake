@@ -1,3 +1,5 @@
+require 'json'
+
 desc 'Generate mrbgem files'
 task :'mrbgemify' => ['mrbgemify:dependencies', 'mrbgemify:generate', 'mrbgemify:cleanup']
 
@@ -22,7 +24,7 @@ MRuby::Gem::Specification.new('mruby-mspec') do |spec|
   spec.rbfiles = [
     File.absolute_path("../mrblib/require_patch.rb", __FILE__),
 <% required_files.each do |file| -%>
-    <%= JSON.dump(file) %>,
+    File.absolute_path(<%= JSON.dump(file).sub(File.absolute_path('.'), '..') %>, __FILE__),
 <% end -%>
     File.absolute_path("../mrblib/require_restore.rb", __FILE__),
     File.absolute_path("../mrblib/builtin_features.rb", __FILE__)
@@ -48,7 +50,6 @@ EOS
 end
 
 unless File.exists?('mrbgemify.conf.rb')
-  require 'json'
   File.open('mrbgemify.conf.rb', 'w') do |f|
     f.puts 'module MRBGemify'
     f.puts ('  REQUIRED_FILES = ' + JSON.dump(MRBGemify::REQUIRED_FILES))

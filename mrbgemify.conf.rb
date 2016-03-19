@@ -16,7 +16,7 @@ MRuby::Gem::Specification.new('mruby-mspec') do |spec|
   spec.rbfiles = [
     File.absolute_path("../mrblib/require_patch.rb", __FILE__),
 <% required_files.each do |file| -%>
-    <%= JSON.dump(file) %>,
+    File.absolute_path(<%= JSON.dump(file).sub(File.absolute_path('.'), '..') %>, __FILE__),
 <% end -%>
     File.absolute_path("../mrblib/require_restore.rb", __FILE__),
     File.absolute_path("../mrblib/builtin_features.rb", __FILE__)
